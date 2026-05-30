@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user stats, rank, and settings.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "height": { "type": "number", "description": "User height in cm" },
+        "weight": { "type": "number", "description": "User weight in kg" },
+        "mode": { "type": "string", "enum": ["relaxed", "disciplined", "strict"] },
+        "rank": { "type": "string", "enum": ["E", "D", "C", "B", "A", "S"] },
+        "jobClass": { "type": "string", "enum": ["Awakened", "Undead Commander", "Monarch"] },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "str": { "type": "number" },
+            "int": { "type": "number" },
+            "agi": { "type": "number" },
+            "vit": { "type": "number" },
+            "sen": { "type": "number" }
+          }
+        },
+        "xp": { "type": "number" },
+        "gold": { "type": "number" },
+        "streak": { "type": "number" },
+        "lastActive": { "type": "string", "format": "date-time" },
+        "friendCode": { "type": "string", "description": "6-letter unique code" },
+        "friends": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["uid", "rank", "stats", "xp", "gold", "streak"]
+    },
+    "Quest": {
+      "title": "Quest",
+      "description": "Daily or custom fitness/productivity task.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["daily", "custom"] },
+        "isCompleted": { "type": "boolean" },
+        "rewardXp": { "type": "number" },
+        "rewardGold": { "type": "number" },
+        "statType": { "type": "string", "enum": ["str", "int", "agi", "vit", "sen"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Showdown": {
+      "title": "Showdown Challenge",
+      "description": "Friend-to-friend exercise challenge.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "creatorId": { "type": "string" },
+        "opponentId": { "type": "string" },
+        "exercise": { "type": "string" },
+        "reps": { "type": "number" },
+        "creatorTime": { "type": "number", "description": "Time in seconds" },
+        "opponentTime": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "completed"] },
+        "winnerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "CalorieLog": {
+      "title": "Calorie Log",
+      "description": "Daily calorie intake entry.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "calories": { "type": "number" },
+        "foodItems": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile and stats"
+    },
+    "/users/{userId}/quests/{questId}": {
+      "schema": "Quest",
+      "description": "User specific quests"
+    },
+    "/users/{userId}/calories/{logId}": {
+      "schema": "CalorieLog",
+      "description": "User calorie tracking"
+    },
+    "/showdowns/{showdownId}": {
+      "schema": "Showdown",
+      "description": "Global showdown challenges between friends"
+    },
+    "/friendCodes/{code}": {
+      "schema": { "type": "object", "properties": { "userId": { "type": "string" } } },
+      "description": "Mapping of unique 6-letter codes to user IDs"
+    }
+  }
+}
